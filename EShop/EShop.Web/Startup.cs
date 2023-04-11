@@ -1,5 +1,10 @@
-using EShop.Web.Data;
-using EShop.Web.Models.Identity;
+
+using EShop.Domain.Identity;
+using EShop.Repository;
+using EShop.Repository.Implementation;
+using EShop.Repository.Interface;
+using EShop.Service.Implementation;
+using EShop.Service.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,6 +38,11 @@ namespace EShop.Web
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<EShopApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+
+            services.AddTransient<IProductService, ProductService>();
+            
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
