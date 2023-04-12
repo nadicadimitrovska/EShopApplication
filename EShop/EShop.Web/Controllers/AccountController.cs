@@ -1,9 +1,9 @@
-﻿//using EShop.Domain.DomainModels;
+﻿//using EShop.Domain;
 //using EShop.Domain.DTO;
 //using EShop.Domain.Identity;
-//using EShop.Domain.DomainModels.Domain;
-//using EShop.Domain.DomainModels.Identity;
-using EShop.Domain.DomainModels;
+//using EShop.Domain.Domain;
+//using EShop.Domain.Identity;
+using EShop.Domain;
 using EShop.Domain.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

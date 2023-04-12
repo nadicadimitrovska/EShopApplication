@@ -19,7 +19,7 @@ namespace EShop.Repository.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.Order", b =>
+            modelBuilder.Entity("EShop.Domain.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,7 +35,7 @@ namespace EShop.Repository.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.Product", b =>
+            modelBuilder.Entity("EShop.Domain.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,46 +64,52 @@ namespace EShop.Repository.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ProductInOrder", b =>
+            modelBuilder.Entity("EShop.Domain.ProductInOrder", b =>
                 {
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ProductId", "OrderId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductInOrders");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ProductInShoppingCart", b =>
+            modelBuilder.Entity("EShop.Domain.ProductInShoppingCart", b =>
                 {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ShoppingCartId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId", "ShoppingCartId");
+                    b.Property<Guid>("ShoppingCartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("ShoppingCartId");
 
                     b.ToTable("ProductInShoppingCarts");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ShoppingCart", b =>
+            modelBuilder.Entity("EShop.Domain.ShoppingCart", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -330,48 +336,48 @@ namespace EShop.Repository.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.Order", b =>
+            modelBuilder.Entity("EShop.Domain.Order", b =>
                 {
                     b.HasOne("EShop.Domain.Identity.EShopApplicationUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ProductInOrder", b =>
+            modelBuilder.Entity("EShop.Domain.ProductInOrder", b =>
                 {
-                    b.HasOne("EShop.Domain.DomainModels.Product", "OrderedProduct")
+                    b.HasOne("EShop.Domain.Product", "OrderedProduct")
                         .WithMany("productInOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EShop.Domain.DomainModels.Order", "UserOrder")
+                    b.HasOne("EShop.Domain.Order", "UserOrder")
                         .WithMany("productInOrders")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ProductInShoppingCart", b =>
+            modelBuilder.Entity("EShop.Domain.ProductInShoppingCart", b =>
                 {
-                    b.HasOne("EShop.Domain.DomainModels.ShoppingCart", "ShoppingCart")
+                    b.HasOne("EShop.Domain.ShoppingCart", "ShoppingCart")
                         .WithMany("ProductInShoppingCarts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EShop.Domain.DomainModels.Product", "Product")
+                    b.HasOne("EShop.Domain.Product", "Product")
                         .WithMany("ProductInShoppingCarts")
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EShop.Domain.DomainModels.ShoppingCart", b =>
+            modelBuilder.Entity("EShop.Domain.ShoppingCart", b =>
                 {
                     b.HasOne("EShop.Domain.Identity.EShopApplicationUser", "Owner")
                         .WithOne("UserCart")
-                        .HasForeignKey("EShop.Domain.DomainModels.ShoppingCart", "OwnerID");
+                        .HasForeignKey("EShop.Domain.ShoppingCart", "OwnerID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

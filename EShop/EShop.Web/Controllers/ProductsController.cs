@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 using EShop.Service.Interface;
-using EShop.Domain.DomainModels;
+using EShop.Domain;
 using EShop.Domain.DTO;
 
 namespace EShop.Web.Controllers

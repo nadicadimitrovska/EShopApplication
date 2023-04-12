@@ -1,7 +1,8 @@
-﻿using EShop.Domain.DomainModels;
+﻿using EShop.Domain;
 using EShop.Domain.DTO;
 using EShop.Repository.Interface;
 using EShop.Service.Interface;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,14 @@ namespace EShop.Service.Implementation
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<ProductInShoppingCart> _productInShoppingCartRepository;
         private readonly IUserRepository _userRepository;
-        public ProductService(IRepository<Product> productRepository, IUserRepository userRepository, IRepository<ProductInShoppingCart> productInShoppingCartRepository)
+        private readonly ILogger<ProductService> _logger;
+
+        public ProductService(ILogger<ProductService> logger, IRepository<Product> productRepository, IUserRepository userRepository, IRepository<ProductInShoppingCart> productInShoppingCartRepository)
         {
             _productRepository = productRepository;
             _userRepository = userRepository;
             _productInShoppingCartRepository = productInShoppingCartRepository;
+            _logger = logger;
         }
         public bool AddToShoppingCart(AddToShoppingCardDto item, string userID)
         {
@@ -41,10 +45,12 @@ namespace EShop.Service.Implementation
                         Quantity = item.Quantity
                     };
                     this._productInShoppingCartRepository.Insert(itemToAdd);
+                    _logger.LogInformation("Product was successfully added into ShoppingCart!");
                     return true;
                 }
                 return false;
             }
+            _logger.LogInformation("Something was wrong. ProductId or UserShoppingCard may be unavailable!");
             return false;
         }
 
@@ -61,6 +67,7 @@ namespace EShop.Service.Implementation
 
         public List<Product> GetAllProducts()
         {
+            _logger.LogInformation("GetAllProducts was called!");
             return this._productRepository.GetAll().ToList();
         }
 

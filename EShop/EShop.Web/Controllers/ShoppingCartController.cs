@@ -1,137 +1,64 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using EShop.Web.Data;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using System.Security.Claims;
-//using Microsoft.EntityFrameworkCore;
-//using EShop.Domain.DomainModels.DTO;
-//using EShop.Domain.DomainModels.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using EShop.Service.Interface;
 
-//namespace EShop.Web.Controllers
-//{
-//    public class ShoppingCartController : Controller
-//    {
+namespace EShop.Web.Controllers
+{
+    public class ShoppingCartController : Controller
+    {
 
-//        private readonly ApplicationDbContext _context;
+        private readonly IShoppingCartService _shoppingCartService;
 
-//        public ShoppingCartController(ApplicationDbContext context)
-//        {
-//            _context = context;
-//        }
+        public ShoppingCartController(IShoppingCartService shoppingCartService)
+        {
+            _shoppingCartService = shoppingCartService;
+        }
 
-//        public async Task<IActionResult> Index()
-//        {
-//            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public IActionResult Index()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-//            var loggedInUser = await _context.Users.Where(z => z.Id == userId)
-//                .Include("UserCart")
-//                .Include("UserCart.ProductInShoppingCarts")
-//                .Include("UserCart.ProductInShoppingCarts.Product")
-//                .FirstOrDefaultAsync();
-//            //ja zema kartichkata
-//            var userShoppingCart = loggedInUser.UserCart;
-//            //gi zema produktite
-//            var AllProducts = userShoppingCart.ProductInShoppingCarts.ToList();
+            
+            return View(this._shoppingCartService.getShoppingCartInfo(userId));
+        }
 
-//            var allProductPrice = AllProducts.Select(z => new
-//            {
-//                ProductPrice=z.Product.ProductPrice,
-//                Quantity = z.Quantity
-//            }).ToList();
+        public IActionResult DeleteFromShoppingCart(Guid id)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-//            var totalPrice = 0;
-//            foreach (var item in allProductPrice)
-//            {
-//                totalPrice += item.Quantity * item.ProductPrice;
-//            }
+            var result = this._shoppingCartService.deleteProductFromSoppingCart(userId, id);
 
-//            ShoppingCartDto scDto = new ShoppingCartDto
-//            {
-//                Products = AllProducts,
-//                TotalPrice = totalPrice
-//            };
+            if (result)
+            {
+                return RedirectToAction("Index", "ShoppingCart");
+            }
+            else
+            {
+                return RedirectToAction("Index", "ShoppingCart");
 
+            }
+        }
 
-//            return View(scDto);
-//        }
+        public IActionResult Order()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-//        public async Task<IActionResult> DeleteFromShoppingCart(Guid? id)
-//        {
-//            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = this._shoppingCartService.order(userId);
 
-//            if(!string.IsNullOrEmpty(userId) && id!=null)
-//            {
-//                var loggedInUser = await _context.Users.Where(z => z.Id == userId)
-//                .Include("UserCart")
-//                .Include("UserCart.ProductInShoppingCarts")
-//                .Include("UserCart.ProductInShoppingCarts.Product")
-//                .FirstOrDefaultAsync();
-//                //ja zema kartichkata
-//                var userShoppingCart = loggedInUser.UserCart;
+            if (result)
+            {
+                return RedirectToAction("Index", "ShoppingCart");
 
-//                var itemToDelete = userShoppingCart.ProductInShoppingCarts.Where(z => z.ProductId.Equals(id)).FirstOrDefault();
-//                userShoppingCart.ProductInShoppingCarts.Remove(itemToDelete);
-
-//                _context.Update(userShoppingCart);
-//                await _context.SaveChangesAsync();
-
-//            }
-
-//            return RedirectToAction("Index", "ShoppingCart");
-//        }
-
-//        public async Task<IActionResult> Order()
-//        {
-//            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-//            if (!string.IsNullOrEmpty(userId))
-//            {
-//                var loggedInUser = await _context.Users.Where(z => z.Id == userId)
-//                .Include("UserCart")
-//                .Include("UserCart.ProductInShoppingCarts")
-//                .Include("UserCart.ProductInShoppingCarts.Product")
-//                .FirstOrDefaultAsync();
-//                //ja zema kartichkata
-//                var userShoppingCart = loggedInUser.UserCart;
-
-//                Order order = new Order
-//                {
-//                    Id = Guid.NewGuid(),
-//                    User=loggedInUser,
-//                    UserId=userId
-//                };
-
-//                _context.Add(order);
-//                await _context.SaveChangesAsync();
-
-
-//                List<ProductInOrder> productInOrders = new List<ProductInOrder>();
-
-//                var result = userShoppingCart.ProductInShoppingCarts.Select(z => new ProductInOrder
-//                {
-//                    ProductId=z.ProductId,
-//                    OrderedProduct=z.Product,
-//                    OrderId=order.Id,
-//                    UserOrder=order
-//                }).ToList();
-
-//                productInOrders.AddRange(result);
-
-//                foreach (var item in productInOrders)
-//                {
-//                    _context.Add(item);
-//                }
-//                await _context.SaveChangesAsync();
-
-//                loggedInUser.UserCart.ProductInShoppingCarts.Clear();
-//                _context.Update(loggedInUser);
-//                await _context.SaveChangesAsync();
-//            }
-
-
-//             return RedirectToAction("Index", "ShoppingCart");
-//        }
-//    }
-//}
+            }
+            else
+            {
+                return RedirectToAction("Index", "ShoppingCart");
+            }
+        }
+    }
+}

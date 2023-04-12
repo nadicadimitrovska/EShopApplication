@@ -1,4 +1,4 @@
-﻿using EShop.Domain.DomainModels;
+﻿using EShop.Domain;
 using EShop.Domain.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -33,8 +33,8 @@ namespace EShop.Repository
                .Property(z => z.Id)
                .ValueGeneratedOnAdd();
 
-            builder.Entity<ProductInShoppingCart>()
-                .HasKey(z => new { z.ProductId, z.ShoppingCartId });
+            //builder.Entity<ProductInShoppingCart>()
+            //    .HasKey(z => new { z.ProductId, z.ShoppingCartId });
 
 
             builder.Entity<ProductInShoppingCart>()
@@ -57,8 +57,8 @@ namespace EShop.Repository
 
 
 
-            builder.Entity<ProductInOrder>()
-                .HasKey(z => new { z.ProductId, z.OrderId });
+            //builder.Entity<ProductInOrder>()
+            //    .HasKey(z => new { z.ProductId, z.OrderId });
 
 
             builder.Entity<ProductInOrder>()

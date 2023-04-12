@@ -8,7 +8,7 @@ using System.Text;
 
 namespace EShop.Repository.Implementation
 {
-    public class Repository<T> : IRepository<T> where T : Domain.DomainModels.BaseEntity
+    public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         private readonly ApplicationDbContext context;
         private DbSet<T> entities;

@@ -42,7 +42,10 @@ namespace EShop.Web
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             services.AddTransient<IProductService, ProductService>();
-            
+            services.AddTransient<IShoppingCartService, ShoppingCartService>();
+
+
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
@@ -74,6 +77,8 @@ namespace EShop.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+               
+                
                 endpoints.MapRazorPages();
             });
         }

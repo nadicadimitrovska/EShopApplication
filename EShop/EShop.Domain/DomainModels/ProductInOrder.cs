@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EShop.Domain.DomainModels
+namespace EShop.Domain
 {
     public class ProductInOrder : BaseEntity
     {

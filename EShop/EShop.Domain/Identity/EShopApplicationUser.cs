@@ -1,4 +1,4 @@
-﻿using EShop.Domain.DomainModels;
+﻿using EShop.Domain;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;

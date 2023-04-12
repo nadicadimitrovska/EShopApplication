@@ -1,4 +1,4 @@
-﻿using EShop.Domain.DomainModels;
+﻿using EShop.Domain;
 using EShop.Domain.DTO;
 using System;
 using System.Collections.Generic;
