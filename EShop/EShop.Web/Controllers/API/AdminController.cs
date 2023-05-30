@@ -25,5 +25,11 @@ namespace EShop.Web.Controllers.API
         {
             return this._orderService.GetAllOrders();
         }
+
+        [HttpPost("[action]")]
+        public Order GetDetailsForOrder(BaseEntity model)
+        {
+            return this._orderService.GetOrderDetails(model);
+        }
     }
 }

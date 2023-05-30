@@ -26,5 +26,14 @@ namespace EShop.Repository.Implementation
                 .Include("productInOrders.OrderedProduct")
                 .ToListAsync().Result;
         }
+
+        public Order GetOrderDetails(BaseEntity model)
+        {
+            return entities
+                .Include(z => z.productInOrders)
+                .Include(z => z.User)
+                .Include("productInOrders.OrderedProduct")
+                .SingleOrDefaultAsync(z=>z.Id==model.Id).Result;
+        }
     }
 }

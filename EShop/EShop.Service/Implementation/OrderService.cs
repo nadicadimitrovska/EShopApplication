@@ -21,5 +21,10 @@ namespace EShop.Service.Implementation
         {
             return this._orderRepository.GetAllOrders();
         }
+
+        public Order GetOrderDetails(BaseEntity model)
+        {
+            return this._orderRepository.GetOrderDetails(model);
+        }
     }
 }
