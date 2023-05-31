@@ -1,8 +1,10 @@
 
+using EShop.Domain.DomainModels;
 using EShop.Domain.Identity;
 using EShop.Repository;
 using EShop.Repository.Implementation;
 using EShop.Repository.Interface;
+using EShop.Service;
 using EShop.Service.Implementation;
 using EShop.Service.Interface;
 using Microsoft.AspNetCore.Builder;
@@ -23,9 +25,12 @@ namespace EShop.Web
 {
     public class Startup
     {
+        private EmailSettings emailSettings;
         public Startup(IConfiguration configuration)
         {
+            emailSettings = new EmailSettings();
             Configuration = configuration;
+            Configuration.GetSection("EmailSettings").Bind(emailSettings);
         }
 
         public IConfiguration Configuration { get; }
@@ -41,6 +46,14 @@ namespace EShop.Web
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
             services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+
+
+            services.AddScoped<EmailSettings>(es => emailSettings);
+            services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailSettings));
+            services.AddScoped<IBackgroundEmailSender, BackgroundEmailSender>();
+            services.AddHostedService<EmailScopedHostedService>();
+
+            //services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
