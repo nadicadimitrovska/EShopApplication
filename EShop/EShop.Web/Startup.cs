@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,14 +49,14 @@ namespace EShop.Web
             services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
 
-            services.AddScoped<EmailSettings>(es => emailSettings);
-            services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailSettings));
-            services.AddScoped<IBackgroundEmailSender, BackgroundEmailSender>();
-            services.AddHostedService<EmailScopedHostedService>();
+            //services.AddScoped<EmailSettings>(es => emailSettings);
+            //services.AddScoped<IEmailService, EmailService>(email => new EmailService(emailSettings));
+            //services.AddScoped<IBackgroundEmailSender, BackgroundEmailSender>();
+            //services.AddHostedService<EmailScopedHostedService>();
 
-            //services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
 
-            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IProductService, EShop.Service.Implementation.ProductService>();
             services.AddTransient<IShoppingCartService, ShoppingCartService>();
             services.AddTransient<IOrderService, OrderService>();
 
@@ -68,6 +69,8 @@ namespace EShop.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

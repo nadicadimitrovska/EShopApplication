@@ -12,13 +12,10 @@ namespace EShop.Web
 {
     public class Program
     {
-
         private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void Main(string[] args)
         {
-
-
             try
             {
                 logger.Debug("init main");
